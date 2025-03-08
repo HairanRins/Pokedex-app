@@ -1,6 +1,7 @@
-import { Image ,ViewStyle } from "react-native"
+import { Image ,StyleSheet,View,ViewStyle } from "react-native"
 import { Card } from "@/components/Card";
 import { ThemedText } from "../ThemedText";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 type Props = {
     style?: ViewStyle,
@@ -9,8 +10,10 @@ type Props = {
 }
 
 export function PokemonCard({style,id,name}: Props) {
+    const colors = useThemeColors();
     return <Card style={style}>
-        <ThemedText variant="caption" color="medium">#{id.toString().padStart(3, '0')}</ThemedText>
+        <View style={[styles.shadow, {backgroundColor: colors.gray.background}]}/>
+        <ThemedText style={styles.id} variant="caption" color="medium">#{id.toString().padStart(3, '0')}</ThemedText>
         <Image 
             source={{uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}}
             style={{ width: 72, height: 72 }}
@@ -18,3 +21,22 @@ export function PokemonCard({style,id,name}: Props) {
         <ThemedText>{name}</ThemedText>
     </Card>
 }
+
+const styles = StyleSheet.create({
+    card: {
+        position: 'relative',
+        alignItems: 'center',
+        padding: 4,
+    },
+    id: {
+        alignSelf: 'flex-end',
+    },
+    shadow: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 44,
+        borderRadius: 7
+    }
+})

@@ -24,7 +24,7 @@ export default function Index() {
             contentContainerStyle={[styles.gridGap, styles.list]}
             columnWrapperStyle={styles.gridGap}
             renderItem={({ item }) => ( 
-                <PokemonCard id={item.id} name={item.name} style={{ flex: 1/3, height:200 }}/>
+                <PokemonCard id={item.id} name={item.name} style={{ flex: 1/3}}/>
             )} 
             keyExtractor={(item) => item.id.toString()}
           />
