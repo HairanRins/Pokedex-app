@@ -12,13 +12,13 @@ type Props = {
 export function PokemonCard({style,id,name}: Props) {
     const colors = useThemeColors();
     return <Card style={style}>
-        <View style={[styles.shadow, {backgroundColor: colors.gray.background}]}/>
         <ThemedText style={styles.id} variant="caption" color="medium">#{id.toString().padStart(3, '0')}</ThemedText>
         <Image 
             source={{uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}}
             style={{ width: 72, height: 72 }}
         />
         <ThemedText>{name}</ThemedText>
+        <View style={[styles.shadow, {backgroundColor: colors.gray.background}]}/>
     </Card>
 }
 
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         height: 44,
-        borderRadius: 7
+        borderRadius: 7,
+        zIndex: -1,
     }
 })
