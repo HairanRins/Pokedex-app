@@ -6,7 +6,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { useFetchQuery } from "@/hooks/useFetchQuery";
 import { Colors } from "@/constants/Colors";
 import { useThemeColors } from "@/hooks/useThemeColors";
-import { formatWeight, getPokemonArtwork } from "@/functions/pokemon";
+import { basePokemonStats, formatWeight, getPokemonArtwork } from "@/functions/pokemon";
 import { Card } from "@/components/Card";
 import { PokemonType } from "@/components/pokemon/PokemonType";
 import { PokemonSpec } from "@/components/pokemon/PokemonSpec";
@@ -24,7 +24,9 @@ export default function Pokemon() {
         ?.find(({language}) => language.name == 'en')
         ?.flavor_text.replaceAll("\n", ". ")
     
-    return <RootView style={{backgroundColor: colorType}}>
+    const stats = pokemon?.stats ?? basePokemonStats;
+
+    return <RootView backgroundColor={colorType}>
         <View>
             <Image style={styles.pokeball} source={require("@/assets/images/pokeball-big.png")} width={208} height={208}  />
             <Row style={styles.header}>
@@ -41,7 +43,7 @@ export default function Pokemon() {
                             source={{uri: getPokemonArtwork(params.id)}}
                         />
                         <Card style={styles.card}>
-                            <Row gap={16}>
+                            <Row gap={16} style={{height: 20}}>
                                 {types.map(type => <PokemonType name={type.type.name} key={type.type.name} />)}
                             </Row>
 
@@ -57,7 +59,7 @@ export default function Pokemon() {
                             <ThemedText>{bio}</ThemedText>
                             <ThemedText variant="subtitle1" style={{color: colorType}}>Base stats</ThemedText>
                             <View style={{alignSelf: 'stretch'}}>
-                                {pokemon?.stats.map(stat => <PokemonStat key={stat.stat.name} name={stat.stat.name} value={stat.base_stat} color={colorType} />)}     
+                                {stats.map(stat => <PokemonStat key={stat.stat.name} name={stat.stat.name} value={stat.base_stat} color={colorType} />)}     
                             </View>
                         </Card>
                     </View>
