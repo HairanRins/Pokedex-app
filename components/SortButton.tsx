@@ -51,10 +51,14 @@ export function SortButton({value, onChange}: Props) {
                 <View style={[styles.popup, {backgroundColor: colors.tint, ...position}]}>
                     <ThemedText style={styles.title} variant="subtitle2" color="white">Sort by:</ThemedText>
                     <Card style={styles.card}>
-                        {options.map((o) => ( <Pressable onPress={() => onChange(o.value)}><Row key={o.value} gap={8}>
+                        {options.map((o) => (
+                        <Pressable key={o.value} onPress={() => onChange(o.value)}>
+                            <Row gap={8}>
                             <Radio checked={o.value == value}/>
                             <ThemedText>{o.label}</ThemedText>
-                        </Row></Pressable>))}
+                            </Row>
+                        </Pressable>
+                        ))}
                     </Card>
                 </View>
             </Modal>

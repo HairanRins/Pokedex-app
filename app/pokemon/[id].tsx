@@ -6,6 +6,9 @@ import { ThemedText } from "@/components/ThemedText";
 import { useFetchQuery } from "@/hooks/useFetchQuery";
 import { Colors } from "@/constants/Colors";
 import { useThemeColors } from "@/hooks/useThemeColors";
+import { getPokemonArtwork } from "@/functions/pokemon";
+import { Card } from "@/components/Card";
+import { PokemonType } from "@/components/PokemonType";
 
 export default function Pokemon() {
     const colors = useThemeColors();
@@ -13,7 +16,7 @@ export default function Pokemon() {
     const {data: pokemon} = useFetchQuery("/pokemon/[id]", {id: params.id})
     const mainType = pokemon?.types?.[0]?.type.name;
     const colorType = mainType ? Colors.light.type[mainType] : Colors.light.tint;
-    console.log({mainType, colorType});
+    const types = pokemon?.types ?? []
     
     return <RootView style={{backgroundColor: colorType}}>
         <View>
@@ -22,10 +25,21 @@ export default function Pokemon() {
                 <Pressable onPress={router.back}>
                     <Row gap={8}>
                         <Image source={require("@/assets/images/back.png")} width={32} height={32}/>
-                        <ThemedText color="white" variant="headline">
+                        <ThemedText color="white" variant="headline" style={{textTransform: "capitalize"}}>
                             {pokemon?.name}
                         </ThemedText>
                     </Row>
+                    <View style={styles.body}>
+                        <Image 
+                            style={styles.artwork}
+                            source={{uri: getPokemonArtwork(params.id)}}
+                        />
+                        <Card style={styles.card}>
+                            <Row style={{justifyContent: 'center'}} gap={16}>
+                                {types.map(type => <PokemonType name={type.type.name} key={type.type.name} />)}
+                            </Row>
+                        </Card>
+                    </View>
                     <ThemedText color="white" variant="subtitle2">#{params.id.padStart(3, '0')}</ThemedText>
                 </Pressable>
             </Row>
@@ -46,5 +60,20 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 8,
         top: 8,
+    },
+    artwork: {
+        position: 'absolute',
+        top: -140,
+        alignSelf: "center",
+        width: 200,
+        height: 200,
+        zIndex: 2,
+    },
+    body: {
+        marginTop:144,
+    },
+    card: {
+        paddingHorizontal: 20,
+        paddingTop: 56,
     }
 })
