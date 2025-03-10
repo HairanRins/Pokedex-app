@@ -11,7 +11,7 @@ type Props = ViewProps & {
 export function PokemonSpec({style, image, title, description, ...rest}: Props) {
     return <View style={[style, styles.root]} {...rest}>
         <Row style={styles.row}>
-            {image && <Image source={image} width={16} height={16} />}
+            {image && <Image source={image} style={{height:16, width:16,}} />}
             <ThemedText>{title}</ThemedText>
         </Row>
         <ThemedText variant="caption" color="medium">

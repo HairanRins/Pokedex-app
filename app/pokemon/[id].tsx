@@ -98,11 +98,11 @@ function PokemonView({id, onPrevious, onNext}: Props) {
 
     return <RootView backgroundColor={colorType}>
         <View>
-            <Image style={styles.pokeball} source={require("@/assets/images/pokeball-big.png")} width={208} height={208}  />
+            <Image style={styles.pokeball} source={require("@/assets/images/pokeball-big.png")} />
             <Row style={styles.header}>
                 <Pressable onPress={router.back}>
                     <Row gap={8}>
-                        <Image source={require("@/assets/images/back.png")} width={32} height={32}/>
+                        <Image source={require("@/assets/images/back.png")} style={{width:32, height:32}} />
                         <ThemedText color="white" variant="headline" style={{textTransform: "capitalize"}}>
                             {pokemon?.name}
                         </ThemedText>
@@ -113,17 +113,18 @@ function PokemonView({id, onPrevious, onNext}: Props) {
                                     <View style={{width: 24, height: 24}}></View>
                                 ) : (
                                 <Pressable onPress={onPrevious}>
-                                    <Image width={24} height={24} source={require("@/assets/images/chevron_left.png")} />
+                                    <Image style={{width: 24, height: 24}} source={require("@/assets/images/chevron_left.png")} />
                                 </Pressable>)}
                                 <Pressable onPress={onImagePress}>
                                     <Image 
                                         style={styles.artwork}
                                         source={{uri: getPokemonArtwork(id)}}
+                                        
                                     />
                                 </Pressable>
                                 {isLast ? <View style={{width: 24, height: 24}}></View>
                                 :  <Pressable onPress={onNext}>
-                                    <Image width={24} height={24} source={require("@/assets/images/chevron_right.png")} />
+                                    <Image style={{width: 24, height: 24}} source={require("@/assets/images/chevron_right.png")} />
                                 </Pressable>}
                             </Row>
                             <Row gap={16} style={{height: 20}}>
@@ -138,7 +139,7 @@ function PokemonView({id, onPrevious, onNext}: Props) {
                                 <PokemonSpec title={pokemon?.moves.slice(0, 2).map(m => m.move.name).join('\n')} description="Moves" />
                             </Row>
 
-                            {/* Stats */}
+                            {/* Stats */} 
                             <ThemedText>{bio}</ThemedText>
                             <ThemedText variant="subtitle1" style={{color: colorType}}>Base stats</ThemedText>
                             <View style={{alignSelf: 'stretch'}}>
@@ -161,10 +162,11 @@ const styles = StyleSheet.create({
 
     },
     pokeball: {
-        opacity: .1,
         position: 'absolute',
         right: 8,
         top: 8,
+        width:208,
+        height: 208,
     },
     imageRow: {
         position: 'absolute',
@@ -176,12 +178,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     artwork: {
-        
+        width: 200, 
+        height: 200,
+        resizeMode: 'contain',
     },
     card: {
         marginTop:144,
         paddingHorizontal: 20,
-        paddingTop: 56,
+        paddingTop: 60,
         paddingBottom: 20,
         gap: 16,
         alignItems: 'center',
