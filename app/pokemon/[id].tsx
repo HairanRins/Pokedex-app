@@ -11,11 +11,14 @@ import { Card } from "@/components/Card";
 import { PokemonType } from "@/components/pokemon/PokemonType";
 import { PokemonSpec } from "@/components/pokemon/PokemonSpec";
 import { PokemonStat } from "@/components/pokemon/PokemonStat";
+import { Audio } from "expo-av";
+
 
 export default function Pokemon() {
     const colors = useThemeColors();
     const params = useLocalSearchParams() as {id: string};
     const {data: pokemon} = useFetchQuery("/pokemon/[id]", {id: params.id})
+    const id = parseInt(params.id, 10)
     const {data: species} = useFetchQuery("/pokemon-species/[id]", {id: params.id})
     const mainType = pokemon?.types?.[0]?.type.name;
     const colorType = mainType ? Colors.light.type[mainType] : Colors.light.tint;
@@ -25,6 +28,25 @@ export default function Pokemon() {
         ?.flavor_text.replaceAll("\n", ". ")
     
     const stats = pokemon?.stats ?? basePokemonStats;
+    const onImagePress = async () => {
+        const cry = pokemon?.cries.latest
+        if (!cry) {
+            return;
+        }
+        const {sound} = await Audio.Sound.createAsync({
+            uri: cry
+        }, {shouldPlay: true})
+        sound.playAsync()
+    };
+    const onPrevious = () => {
+        router.replace({pathname: '/pokemon/[id]', params: {id: Math.max(id - 1, 1)}})
+    }
+    const onNext = () => {
+        router.replace({pathname: '/pokemon/[id]', params: {id: Math.min(id + 1, 151)}})
+    }
+    const isFirst = id == 1
+    const isLast = id == 151
+
 
     return <RootView backgroundColor={colorType}>
         <View>
@@ -37,12 +59,25 @@ export default function Pokemon() {
                             {pokemon?.name}
                         </ThemedText>
                     </Row>
-                    <View style={styles.body}>
-                        <Image 
-                            style={styles.artwork}
-                            source={{uri: getPokemonArtwork(params.id)}}
-                        />
                         <Card style={styles.card}>
+                            <Row style={styles.imageRow}>
+                                {isFirst ? (
+                                    <View style={{width: 24, height: 24}}></View>
+                                ) : (
+                                <Pressable onPress={onPrevious}>
+                                    <Image width={24} height={24} source={require("@/assets/images/chevron_left.png")} />
+                                </Pressable>)}
+                                <Pressable onPress={onImagePress}>
+                                    <Image 
+                                        style={styles.artwork}
+                                        source={{uri: getPokemonArtwork(params.id)}}
+                                    />
+                                </Pressable>
+                                {isLast ? <View style={{width: 24, height: 24}}></View>
+                                :  <Pressable onPress={onNext}>
+                                    <Image width={24} height={24} source={require("@/assets/images/chevron_right.png")} />
+                                </Pressable>}
+                            </Row>
                             <Row gap={16} style={{height: 20}}>
                                 {types.map(type => <PokemonType name={type.type.name} key={type.type.name} />)}
                             </Row>
@@ -62,7 +97,7 @@ export default function Pokemon() {
                                 {stats.map(stat => <PokemonStat key={stat.stat.name} name={stat.stat.name} value={stat.base_stat} color={colorType} />)}     
                             </View>
                         </Card>
-                    </View>
+                    
                     <ThemedText color="white" variant="subtitle2">#{params.id.padStart(3, '0')}</ThemedText>
                 </Pressable>
             </Row>
@@ -83,18 +118,20 @@ const styles = StyleSheet.create({
         right: 8,
         top: 8,
     },
-    artwork: {
+    imageRow: {
         position: 'absolute',
         top: -140,
-        alignSelf: "center",
-        width: 200,
-        height: 200,
         zIndex: 2,
+        justifyContent: 'space-between',
+        left: 0,
+        right: 0,
+        paddingHorizontal: 20,
     },
-    body: {
-        marginTop:144,
+    artwork: {
+        
     },
     card: {
+        marginTop:144,
         paddingHorizontal: 20,
         paddingTop: 56,
         paddingBottom: 20,
